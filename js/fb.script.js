@@ -93,10 +93,9 @@
                                     on = true;
                                     access_token = resp.authResponse.accessToken;
                                     user_id = resp.authResponse.userID;
-                                    boton.remove();  
-
-                                    if(call)
-                                      call();                                   
+                                    
+                                    location.reload();
+                                                                    
 
                                 } else {
                                     

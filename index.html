@@ -22,7 +22,7 @@
 
   	   	              $("#pubP").click(function(){
 
-  	   	              	var pagId=$('#pag option:selected').val();
+  	   	              	var pagId=$('#pags option:selected').val();
 
   	   	              	pubPage({pag_id:pagId,msg:$("#estado").val()});
 
@@ -86,10 +86,12 @@
                      console.log('Se ha publicado todo id: '+resp.id);
                   }
         	  }
-        }
+        };
 
      if(args)
      	$.extend(this.args,args);
+
+     console.log(this.args);
 
     FB.api('/'+this.args.pag_id+'/feed', 'post',
     {
