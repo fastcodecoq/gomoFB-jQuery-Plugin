@@ -2,7 +2,7 @@
    Opensource
    ahora iniciamos el sdk de face :)
 */
-    
+    var fq;
 
      fbRoot = document.createElement("div");
      fbRoot.id = "fb-root";
@@ -20,89 +20,145 @@
 
  (function($){
 
- 	  var boton, data, filtro = 0;   
+ 	  var boton, data, on = false, filtro = 0, user, call;   
 
 
     this.ini =  function(vars){
-
-    	   fbIni();
-         return this;
+     
+    	   return chkLogin(fbIni());         
 
      };
 
 
-  this.fbLogin = function(){
-
-    	 console.log("conectando");    
-
-    
-
-    	 FB.login(function(resp) {
-
-    	 	chkLogin;   	
-
-    	 },data.permisos);
 
 
-    };
+   
+   this.isOn = function(){
+
+       return on;
+
+   };
+
 
  
    this.chkLogin =  function (resp) {                   
    		  		
 
-                    if (resp.authResponse) {
+         if(filtro > 0)
+          return;
 
-                    	  console.log("conectado");
-                      
-                        return {cod:"10",estado:"conectado"};
+                    if (resp.authResponse) {
+                
+                  
+
+                    	  console.log("conectado y con permisos");
+                        on = true;
+                        boton.remove();
+                       
+                  
                    
                     } else {
 
                     	console.log("no estamos conectado y por eso pediremos conectarnos a traves"+
                     				"de un boton");
+
+                      on = false;
+
+                       actBot("Conectar");
                        
                         boton.click(function() {
 
+                            FB.login(function(resp) {
 
-                           resp = fbLogin();
-                                
-                                if (resp.authResponse) {
+                                 if (resp.authResponse) {
                                     
                                     console.log("estamos conectados");
-                                    console.log(fbLogin());	                                      
+                                    on = true;
+                                    boton.remove();  
+
+                                    if(call)
+                                      call();                                   
 
                                 } else {
                                     
                                     console.log("no tenemos permisos");
                                     return {cod:11,estado:"sin permisos"}
-                                }
+                                }        
+
+                            },data.permisos);
+                                
+                               
 	
 
                         });
                     }
+
+                     if(call)
+                          call();
+
+                        filtro++;
+
                 };
  
   
 
-    this.fbInfo = function(){
+    this.fbInfo = function(callback){
 
-          console.log("obteniendo info del usuario");
-    	  FB.api('/me', function(info) {
-    	       
-    	       console.log(info);
-               return info;
+       
+      if(!on)
+        return;
 
-             });	  	
+ 
+       FB.api('/me', callback);
+        	         
+  
 
     };
 
-  
+    this.pubEstado = function(estado){
+       FB.api(
+                  {
+                    method: 'status.set',
+                    status: estado
+                  },
+                  function(response) {
+                    
+                    if (response == 0){
+                       
+                    }
+                    else{
+                        
+                    }
+
+                  }
+                );
+    }
+
+
+    this.fql = function(query,callback){
+        
+            FB.api({
+                     method: 'fql.query',
+                     query: query
+                     }, 
+
+                     callback
+                  );
+
+
+
+    };
+
+   
+    this.actUser = function(user){
+
+          user = user;
+          console.log(user);
+
+    };
 
     this.fbIni = function() {
                
-               $(document).ready(function(){ 
-
-              if(filtro == 0){       
 
                     FB.init({ appId: data.id, 
                     status: true, 
@@ -114,17 +170,17 @@
 
                     FB.getLoginStatus( chkLogin );
                     FB.Event.subscribe( 'auth.statusChange', chkLogin );	
-             
-           
-              }
 
-              filtro++;
+                    return this;
 
-            });
-
+         
             };
 
     this.compartir =  function (link,callback){
+
+
+      if(!on)
+        return;
 
                 var share = {
                     method: 'stream.share',
@@ -141,10 +197,19 @@
                if(callback)
                        callback;
 
-            }
+            };
 
-     function publicaGraph(vars,callback){
+     this.publicaGraph = function(vars,callback){
             
+  
+      if(!on)
+        return;
+
+      if(jQuery.isFunction(vars))
+          callback = vars;
+
+
+
                 this.vars = {
 
                   message : "Gomosoft, facebook sdk Jquery plugin",
@@ -154,13 +219,12 @@
                   description: "Test"
 
                 }
-
-             call = callback;
+        
 
               if(vars)
                 $.extend(this.vars,vars);
 
-                return FB.api('/me/feed', 'post', this.vars, 
+           return FB.api('/me/feed', 'post', this.vars, 
               
                 function(response) {               
                     
@@ -170,25 +234,40 @@
 
                     } else {
                         
-                        call;                      
+                        alert("se ha publicado correctamente");
 
                     }
                 });
-            }
+
+
+            };
+
+
+    this.actBot = function(texto){
+
+          boton.text(texto);
+
+    }
 
 
 
-    jQuery.fn.fb = function(vars){    		
+    jQuery.fn.fb = function(vars,callback){    		
     
        boton = $(this);
+
+       if(callback)
+           call = callback
+       else if(jQuery.isFunction(vars))
+           call = vars;
+
       
 
     	 $("body").append("<div id='fb-root'></div>");
 
     		this.vars = {
-    			id : '369642146455483',
+    			id : '213583211996075',
     			secret : "dsa9812j12hsa71",
-    			permisos : {scope:'email,user_birthday,status_update,publish_stream,user_about_me'}
+    			permisos : {scope:'manage_pages,email,user_birthday,status_update,publish_stream,user_about_me,read_friendlists,user_hometown,user_interests,user_location,user_subscriptions,friends_location,friends_interests'}
     		}
 
 
@@ -198,9 +277,9 @@
 
        console.log(this.vars);
 
-       data = this.vars;       
+       data = this.vars;      
 
-       return ini(this.vars);
+       return fbIni();
 
 
     };                  

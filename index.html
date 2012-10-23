@@ -13,14 +13,111 @@
   	  
   	   $(window).load(function(){
 
-  	   	  face = $("#face").fb();
-  	   	  face.compartir("http://gomosoft.com");
+  	   	 var face = $("#face").fb(function(){  	   	  	  
+  	   	 	     
+  	   	  			if(this.isOn())
+  	   	  			  $(".conectado").fadeIn();
+  	   	  			else
+  	   	  		      $("#face").fadeIn();
 
-  	   })
+  	   	  		  $("body").append("<ul class='info' style='display:none'></ul>");
+
+  	   	  });   
+
+  	   	  console.log(face);
+
+        	     	 	
+  	   });
+
+
+  	   	function paginas(){
+  	   		
+
+  	   		$(".info").html("");
+
+  	   		fql("SELECT page_id, type from page_admin WHERE uid=me()",
+  	   			function(resp){ 
+
+  	   				for (x in resp){
+  	   					console.log(resp[x].page_id);
+
+  	   					fql("SELECT name, fan_count, pic_small FROM page WHERE page_id ="+resp[x].page_id,
+
+  	   						function(res){
+								
+								console.log(res[0])		
+								res = res[0];			
+
+  	   						   $(".info").append("<li> <img src='"+res.pic_small+"' />&nbsp; "+res.name+" &nbsp; "+res.fan_count+" likes</li>")
+
+  	   					  });
+
+  	   				}
+
+  	   				$(".info").fadeIn();
+
+  	   			});
+
+
+  	   	}
+
+
+
+  	   		function estado(){
+
+  	   			  pubEstado("Probando gomo fb plugin ");
+  	   		}
+
+
+  	   		function usuario(){
+
+  	   			fbInfo(function(resp){
+
+  	   				console.log(resp);
+
+  	   				var info = $(".info")
+  	   				info.html("");
+
+  	   				info.append("<li>Foto de perfil: &nbsp;<img src='https://graph.facebook.com/"+resp.id+"/picture' alt='' /></li>");
+  	   				info.append("<li>Nombre: "+resp.name+"</li>");
+  	   				info.append("<li>Sexo: "+resp.gender+"</li>");
+  	   				info.append("<li>email: "+resp.email+"</li>");
+  	   				info.append("<li>ciudad de origen: "+resp.hometown.name+"</li>");
+  	   				info.append("<li>Reside en: "+resp.location.name+"</li>");
+  	   				info.append("<li>Idioma: "+resp.locale+"</li>");
+  	   				
+
+  	   				fql("SELECT interests,email_hashes,name,friend_count,pic_cover FROM user where uid=me()",function(resp){
+
+  	   						resp = resp[0];
+  	   						console.log(resp);
+
+  	   						info.append("<li>Amigos: "+resp.friend_count+"</li>");
+  	   						info.append("<li>foto de portada: &nbsp; <img src='"+resp.pic_cover.source+"' alt='' /></li>");
+
+  	   				});
+
+  	   					info.fadeIn();
+
+
+  	   			});
+
+  	   		
+
+  	   		}
 
   </script>
 
-  <button id="face"> iniciar </button>
+  <h1>Plugin jQuery gomoFB</h1>
+
+  <button id="face" style="display:none"> Conectar </button> <br/>
+
+  <div class="conectado" style="display:none">
+  <button id="pub_est" onclick="publicaGraph()">Publicar en la biografia con Graph</button><br/>
+  <button id="pub_est" onclick="estado()">Publicar estado</button><br/>
+  <button id="pag" onclick="paginas()">Mostrar mis páginas</button><br/>
+  <button id="face" onclick="usuario()"> Mostrar mis datos </button> <br/>
+  </div>
 
 </body>
 </html>
