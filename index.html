@@ -15,8 +15,20 @@
 
   	   	 var face = $("#face").fb(function(){  	   	  	  
   	   	 	     
-  	   	  			if(this.isOn())
+  	   	  			if(this.isOn()){
   	   	  			  $(".conectado").fadeIn();
+  	   	             
+  	   	              mosPage();
+
+  	   	              $("#pubP").click(function(){
+
+  	   	              	var pagId=$('#pag option:selected').val();
+
+  	   	              	pubPage({pag_id:pagId,msg:$("#estado").val()});
+
+  	   	              });
+
+  	   	  			 } 
   	   	  			else
   	   	  		      $("#face").fadeIn();
 
@@ -26,8 +38,68 @@
 
   	   	  console.log(face);
 
+
         	     	 	
   	   });
+
+  	   function mosPage(){
+
+    $('#container').show();
+
+    FB.api(
+    {
+        method: 'fql.query',
+        query: 'SELECT page_id,name from page WHERE page_id IN ( SELECT page_id from page_admin WHERE uid=me())'
+    },
+        function(resp) {
+			
+			//cargamos las paginas del usuario en un select        
+
+        html='';
+
+        $.each(resp,function(key,val){
+            html+='<option value="'+val.page_id+'">'+val.name+'</option>';
+        });
+
+
+        $('#pags').html(html);
+
+      }
+
+   ); 
+  
+		}    
+
+		function pubPage(args)
+         {
+
+        this.args = {
+        	  pag_id : "473941369312625",
+        	  msg : "Probando gomoFB",
+        	  link : "http://gomosoft.com",
+        	  picture : "http://gomosoft.com/img/logo.png",
+        	  callback:function(resp){
+        	  	
+        	  	 if (!resp || resp.error) {
+                    console.log('Ups! error');
+                  } else {
+                     console.log('Se ha publicado todo id: '+resp.id);
+                  }
+        	  }
+        }
+
+     if(args)
+     	$.extend(this.args,args);
+
+    FB.api('/'+this.args.pag_id+'/feed', 'post',
+    {
+        message: this.args.msg,
+        
+    },this.args.callback);
+
+}
+
+
 
 
   	   	function paginas(){
@@ -41,23 +113,8 @@
   	   				for (x in resp){
   	   					console.log(resp[x].page_id);
 
-  	   					 FB.api('/'+resp[x].page_id+'/feed', 'post',
-  	   					 { 
+  	   						pubPage({pag_id:resp[x].page_id});
 
-                        message     : "Test",
-                        link        : 'https://gomosoft.com',
-                        picture     : 'http://gomosoft.com/img/logo.png',
-                        name        : 'gomoFB plugin',
-                        description : 'Plugin desarrollado usando jQuery y el SDK JS de Facebook con el objetivo de simplificar la creación de 	            apps con entorno social'                        
-               		    }, function(resp){
-
-               		    	 if (!resp || resp.error) {
-                    		    console.log('Error ');
-                  			  } else {
-                                console.log('OK ID: ' + resp.id);
-                  			  }
-
-               		    });
 
   	   					fql("SELECT name, fan_count, pic_small FROM page WHERE page_id ="+resp[x].page_id,
 
@@ -147,6 +204,13 @@
   <button id="pag" onclick="paginas()">Mostrar mis páginas</button><br/>
   <button id="face" onclick="usuario()"> Mostrar mis datos </button> <br/>
   </div>
+
+ <br />
+  <div id="container" style="display:none;">  
+    <select id="pags"></select>  <br />
+    <textarea id="estado"></textarea>  <br />
+    <input type="button" value="Publicar en el muro de la pagina" id="pubP" />  
+ </div>  
 
 </body>
 </html>
