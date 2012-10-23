@@ -68,6 +68,17 @@
   	   			  pubEstado("Probando gomo fb plugin ");
   	   		}
 
+  	   		function graph(){
+
+  	   			  publicaGraph(function(resp){
+
+  	   			  		console.log(resp);
+  	   			  		alert("Todo se publicó correctamente");
+
+  	   			  });
+
+  	   		}
+
 
   	   		function usuario(){
 
@@ -87,7 +98,7 @@
   	   				info.append("<li>Idioma: "+resp.locale+"</li>");
   	   				
 
-  	   				fql("SELECT interests,email_hashes,user_likes,name,friend_count,pic_cover FROM user where uid=me()",function(resp){
+  	   				fql("SELECT interests,email_hashes,user_likes,name,friend_count,pic_cover FROM user where uid=me()", function(resp){
 
   	   						resp = resp[0];
   	   						console.log(resp);
@@ -113,7 +124,7 @@
   <button id="face" style="display:none"> Conectar </button> <br/>
 
   <div class="conectado" style="display:none">
-  <button id="pub_est" onclick="publicaGraph()">Publicar en la biografia con Graph</button><br/>
+  <button id="pub_est" onclick="graph()">Publicar en la biografia con Graph</button><br/>
   <button id="pub_est" onclick="estado()">Publicar estado</button><br/>
   <button id="pag" onclick="paginas()">Mostrar mis páginas</button><br/>
   <button id="face" onclick="usuario()"> Mostrar mis datos </button> <br/>

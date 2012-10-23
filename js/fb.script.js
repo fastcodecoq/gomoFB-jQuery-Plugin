@@ -2,7 +2,6 @@
    Opensource
    ahora iniciamos el sdk de face :)
 */
-    var fq;
 
      fbRoot = document.createElement("div");
      fbRoot.id = "fb-root";
@@ -115,23 +114,16 @@
 
     };
 
-    this.pubEstado = function(estado){
+    this.pubEstado = function(estado,callback){
+     
        FB.api(
                   {
                     method: 'status.set',
                     status: estado
                   },
-                  function(response) {
-                    
-                    if (response == 0){
-                       
-                    }
-                    else{
-                        
-                    }
-
-                  }
+                  callback
                 );
+
     }
 
 
@@ -187,15 +179,7 @@
                     u: link
                 };
 
-                FB.ui(share, function(response) { 
-                                        
-                    console.log(response); 
-                     
-
-                });
-
-               if(callback)
-                       callback;
+                FB.ui(share, callback);
 
             };
 
@@ -224,20 +208,7 @@
               if(vars)
                 $.extend(this.vars,vars);
 
-           return FB.api('/me/feed', 'post', this.vars, 
-              
-                function(response) {               
-                    
-                    if (!response || response.error) {
-                        
-                       console.log({error : response.error , cod:11});
-
-                    } else {
-                        
-                        alert("se ha publicado correctamente");
-
-                    }
-                });
+           return FB.api('/me/feed', 'post', this.vars, callback);
 
 
             };
