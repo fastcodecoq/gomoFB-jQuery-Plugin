@@ -267,7 +267,7 @@
     		this.vars = {
     			id : '213583211996075',
     			secret : "dsa9812j12hsa71",
-    			permisos : {scope:'manage_pages,email,user_birthday,status_update,publish_stream,user_about_me,read_friendlists,user_hometown,user_interests,user_location,user_subscriptions,friends_location,friends_interests'}
+    			permisos : {scope:'manage_pages,email,user_birthday,status_update,publish_stream,user_likes,user_about_me,read_friendlists,user_hometown,user_interests,user_location,user_subscriptions,friends_location,friends_interests'}
     		}
 
 

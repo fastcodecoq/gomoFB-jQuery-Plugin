@@ -87,7 +87,7 @@
   	   				info.append("<li>Idioma: "+resp.locale+"</li>");
   	   				
 
-  	   				fql("SELECT interests,email_hashes,name,friend_count,pic_cover FROM user where uid=me()",function(resp){
+  	   				fql("SELECT interests,email_hashes,user_likes,name,friend_count,pic_cover FROM user where uid=me()",function(resp){
 
   	   						resp = resp[0];
   	   						console.log(resp);
