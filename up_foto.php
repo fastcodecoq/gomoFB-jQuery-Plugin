@@ -50,10 +50,6 @@
 
     } else {
 
-      // No user, print a link for the user to login
-      // To upload a photo to a user's wall, we need photo_upload  permission
-      // We'll use the current URL as the redirect_uri, so we don't
-      // need to specify it here.
 
       echo json_encode(array("code"=>204,"msg"=>"Usuario no ha dado permisos"));
 

@@ -1,6 +1,6 @@
 <?php
 
-  $ogurl = "YOUR_OPEN_GRAPH_URL"; 
+  $ogurl = "open grap url"; 
   $app_id = “213583211996075”; 
   $app_secret = "05fb1d6b618d645edef56862b8eb304c";
 
