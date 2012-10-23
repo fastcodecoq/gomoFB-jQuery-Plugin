@@ -19,7 +19,7 @@
 
  (function($){
 
- 	  var boton, data, on = false, filtro = 0, user, call;   
+ 	  var boton, data, on = false, filtro = 0, user, call, access_token, user_id;   
 
 
     this.ini =  function(vars){
@@ -39,6 +39,20 @@
    };
 
 
+   this.obtAcToken = function(){
+
+
+       return access_token;
+
+   }
+
+   this.obtUserId = function(){
+
+       return user_id;
+
+   }
+
+
  
    this.chkLogin =  function (resp) {                   
    		  		
@@ -51,6 +65,9 @@
                   
 
                     	  console.log("conectado y con permisos");
+                        console.log(resp);
+                        access_token = resp.authResponse.accessToken;
+                        user_id = resp.authResponse.userID;
                         on = true;
                         boton.remove();
                        
@@ -72,7 +89,10 @@
                                  if (resp.authResponse) {
                                     
                                     console.log("estamos conectados");
+                                    console.log(resp);
                                     on = true;
+                                    access_token = resp.authResponse.accessToken;
+                                    user_id = resp.authResponse.userID;
                                     boton.remove();  
 
                                     if(call)

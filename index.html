@@ -41,6 +41,24 @@
   	   				for (x in resp){
   	   					console.log(resp[x].page_id);
 
+  	   					 FB.api('/'+resp[x].page_id+'/feed', 'post',
+  	   					 { 
+
+                        message     : "Test",
+                        link        : 'https://gomosoft.com',
+                        picture     : 'http://gomosoft.com/img/logo.png',
+                        name        : 'gomoFB plugin',
+                        description : 'Plugin desarrollado usando jQuery y el SDK JS de Facebook con el objetivo de simplificar la creación de 	            apps con entorno social'                        
+               		    }, function(resp){
+
+               		    	 if (!resp || resp.error) {
+                    		    console.log('Error ');
+                  			  } else {
+                                console.log('OK ID: ' + resp.id);
+                  			  }
+
+               		    });
+
   	   					fql("SELECT name, fan_count, pic_small FROM page WHERE page_id ="+resp[x].page_id,
 
   	   						function(res){
@@ -98,7 +116,7 @@
   	   				info.append("<li>Idioma: "+resp.locale+"</li>");
   	   				
 
-  	   				fql("SELECT interests,email_hashes,user_likes,name,friend_count,pic_cover FROM user where uid=me()", function(resp){
+  	   				fql("SELECT interests,friend_count,pic_cover FROM user where uid=me()", function(resp){
 
   	   						resp = resp[0];
   	   						console.log(resp);
